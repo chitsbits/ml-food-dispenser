@@ -1,6 +1,6 @@
 # Say Hi to Mimi
 
-![Mimi1](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/mimi1.jpg)
+![Mimi1](/images/mimi1.jpg)
 
 A few months ago, some relatives of mine were travelling abroad and needed a family to take care of their cat for a while. I, having wanted a cat since forever, was glad to take her in.
 
@@ -20,7 +20,7 @@ This is where machine learning comes into play. By using AI to detect the state 
 
 To demonstrate this, my project uses a custom-trained convolutional neural network to determine whether a bowl is empty or full, and a pre-trained neural network that can accurately recognize the correct animal approaching the feeder. It uses two Raspberry Pis with a PiCamera each, one to monitor the state of the bowl, and another to watch for incoming pets. Communication will be done using a webserver hosted on one Pi, and the dispenser mechanism will be done using a 3D-printed system, with some Lego motors.
 
-![dispensing](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/dispensing.gif)
+![dispensing](/images/dispensing.gif)
 
 # Creating a Bowl Capacity Monitor
 
@@ -34,17 +34,17 @@ To create this project, I learned to use [Anaconda](https://www.anaconda.com/), 
 
 In order to train my own neural network, I first needed needed to collect my own dataset of Mimi's food bowl, with properly labelled training and validation sets.
 
-To make collecting the data set easier, I wrote a [script](https://github.com/chitsbits/bowl-ml/blob/main/take_train_images.py) (`take_train_images.py`) that allowed me to take pictures using the spacebar, while also automatically naming the image and uploading it to my home server. I took the pictures with the Raspberry Pi I would later use for the dispenser, and made sure to keep the positioning the same, in order to keep the model accurate.
+To make collecting the data set easier, I wrote a [script](https://github.com/chitsbits/bowl-ml/blob/master/take_train_images.py) (`take_train_images.py`) that allowed me to take pictures using the spacebar, while also automatically naming the image and uploading it to my home server. I took the pictures with the Raspberry Pi I would later use for the dispenser, and made sure to keep the positioning the same, in order to keep the model accurate.
 
 I collected a total of 129 images; 25 images of a empty bowl, and 104 images of a non-empty bowl. Using the 80/20% rule of thumb, I put 80% of the images, randomly selected, to the training set, and the other 20% to the validation set.
 
-![dataset](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/trainimgs.png)
+![dataset](/images/trainimgs.png)
 
-You can view the whole dataset [here](https://github.com/chitsbits/bowl-ml/blob/main/bowl_dataset.zip).
+You can view the whole dataset [here](https://github.com/chitsbits/bowl-ml/blob/master/bowl_dataset.zip).
 
 ### Creating the Model
 
-Now that I had my images, I could create and train a neural network on the dataset. As we were dealing with image data, a convolutional neural network best suited my needs. I wrote my training program in [ModelTrainer.ipynb](https://github.com/chitsbits/bowl-ml/blob/main/ModelTrainer.ipynb).
+Now that I had my images, I could create and train a neural network on the dataset. As we were dealing with image data, a convolutional neural network best suited my needs. I wrote my training program in [ModelTrainer.ipynb](https://github.com/chitsbits/bowl-ml/blob/master/ModelTrainer.ipynb).
 
 First, I needed to load the images and rescale the data to values between 0 - 255, resize them to 300x300 pixels, and convert them to grayscale.
 
@@ -200,7 +200,7 @@ Finally, the model is fitted with the dataset I created. Two *callbacks* are use
 
 Using *Matplotlib*, I graphed the accuracy and loss over time:
 
-![graphs](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/graph.png)
+![graphs](/images/graph.png)
 
 ## Testing the Model
 
@@ -210,31 +210,31 @@ Finally, I loaded a couple test images to see its performance on fresh data whic
 
 As expected, when the bowl still has food, the confidence approaches 100%, and when the bowl is empty or almost empty, the confidence approaches 0%.
 
-![testset](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/testset.png)
+![testset](/images/testset.png)
 
 Something interesting I noticed was that although there were no images in the training/validation set that contained Mimi standing over the bowl, the model was still able to effectively predict the test images that did, indicating that the model was able to learn specifically the features of the bowl and food, being able to recognize them even when something is obstructing the view. 
 
 ## Creating the Dispenser
 
-[TensorFlow Lite](https://www.tensorflow.org/lite) is a lightweight framework for deploying TensorFlow models onto IoT devices, such as for Android, iOS, and Raspberry Pi. Now that I had my working model, I wrote [`LiteConverter.ipynb`](https://github.com/chitsbits/bowl-ml/blob/main/LiteConverter.ipynb) to convert the model from the *SavedModel* format into a `.tflite` file.
+[TensorFlow Lite](https://www.tensorflow.org/lite) is a lightweight framework for deploying TensorFlow models onto IoT devices, such as for Android, iOS, and Raspberry Pi. Now that I had my working model, I wrote [`LiteConverter.ipynb`](https://github.com/chitsbits/bowl-ml/blob/master/LiteConverter.ipynb) to convert the model from the *SavedModel* format into a `.tflite` file.
 
-Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/chitsbits/bowl-ml/blob/main/cat_feeder/CatFeeder.py), which hosts a basic HTTP server using [Flask](https://flask.palletsprojects.com/en/1.1.x/). The program waits for POST requests from the cat detector, which contains the current status of the cat detector. If both the cat is in the room and the bowl is empty, a function is called which uses the GPIO pins to power the Lego motor, driving an axle that pushes food through an opening.
+Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatFeeder.py), which hosts a basic HTTP server using [Flask](https://flask.palletsprojects.com/en/1.1.x/). The program waits for POST requests from the cat detector, which contains the current status of the cat detector. If both the cat is in the room and the bowl is empty, a function is called which uses the GPIO pins to power the Lego motor, driving an axle that pushes food through an opening.
 
 The dispenser is mounted on a stand, with a 3D printed chassis, containing a box for the motor and a container for the cat food. I modelled the chassis using [FreeCAD](https://www.freecadweb.org/) and [Cura](https://ultimaker.com/software/ultimaker-cura), and printed it at home with an Anycubic Mega X.
 
-![print](https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/print.gif)
-<img src="https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/cad.png" alt="drawing" width="320"/>
-<img src="https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/dispenser.JPG" alt="drawing" height="250"/>
+![print](/images/print.gif)
+<img src="/images/cad.png" alt="drawing" width="320"/>
+<img src="/images/dispenser.JPG" alt="drawing" height="250"/>
 
 # Using a Pre-Trained Cat Detector
 
 Unlike with the food bowl, there are many optimized pre-trained cat detectors that you can find online, trained on large datasets. For my cat detector, I used a starter model from the [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), specifically the SSD MobileNet V1 model. The pre-trained model comes in the `.tflite` format, so no conversion was needed.
 
-<img src="https://github.com/chitsbits/bowl-ml/blob/gh-pages/images/catcam.JPG" alt="catcam" width="400"/>
+<img src="/images/catcam.JPG" alt="catcam" width="400"/>
 
 MobileNet V1 is an SSD model, which stands for *Single Shot Detector*. SSD models can identify multiple objects within an image, while also determining their locations and bounding boxes. I used an SSD for this project, as the majority of pre-trained cat models were trained to identify cats versus dogs, rather than cats versus no cats; I needed a model which could do the latter. By simply ignoring other objects found by the model, I could use the SSD model to only detect for cats within the image. Another benefit of using and SSD is that, if needed, one could change the object to detect. For example, if you had a dog instead (or in addition to a cat), the same model could detect for dogs too.
 
-My program, [CatDetector.py](https://github.com/chitsbits/bowl-ml/blob/main/cat_feeder/CatDetector.py), uses modified code from the TensorFlow Lite [examples repository](https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect_picamera.py) to detect specifically for the prescence of a cat, ignoring other objects and bounding boxes, and sends that data via POST request to the webserver hosted on the dispenser.
+My program, [CatDetector.py](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatDetector.py), uses modified code from the TensorFlow Lite [examples repository](https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect_picamera.py) to detect specifically for the prescence of a cat, ignoring other objects and bounding boxes, and sends that data via POST request to the webserver hosted on the dispenser.
 
 # Conclusion
 
