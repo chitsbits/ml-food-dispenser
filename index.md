@@ -223,14 +223,14 @@ Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/c
 The dispenser is mounted on a stand, with a 3D printed chassis, containing a box for the motor and a container for the cat food. I modelled the chassis using [FreeCAD](https://www.freecadweb.org/) and [Cura](https://ultimaker.com/software/ultimaker-cura), and printed it at home with an Anycubic Mega X.
 
 ![print](/images/print.gif)
-<img src="/images/cad.png" alt="drawing" width="320"/>
-<img src="/images/dispenser.JPG" alt="drawing" height="250"/>
+<img src="images/cad.png" alt="drawing" width="320"/>
+<img src="images/dispenser.JPG" alt="drawing" height="250"/>
 
 # Using a Pre-Trained Cat Detector
 
 Unlike with the food bowl, there are many optimized pre-trained cat detectors that you can find online, trained on large datasets. For my cat detector, I used a starter model from the [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), specifically the SSD MobileNet V1 model. The pre-trained model comes in the `.tflite` format, so no conversion was needed.
 
-<img src="/images/catcam.JPG" alt="catcam" width="400"/>
+<img src="images/catcam.JPG" alt="catcam" width="400"/>
 
 MobileNet V1 is an SSD model, which stands for *Single Shot Detector*. SSD models can identify multiple objects within an image, while also determining their locations and bounding boxes. I used an SSD for this project, as the majority of pre-trained cat models were trained to identify cats versus dogs, rather than cats versus no cats; I needed a model which could do the latter. By simply ignoring other objects found by the model, I could use the SSD model to only detect for cats within the image. Another benefit of using and SSD is that, if needed, one could change the object to detect. For example, if you had a dog instead (or in addition to a cat), the same model could detect for dogs too.
 
