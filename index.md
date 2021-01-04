@@ -223,8 +223,11 @@ Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/c
 The dispenser is mounted on a stand, with a 3D printed chassis, containing a box for the motor and a container for the cat food. I modelled the chassis using [FreeCAD](https://www.freecadweb.org/) and [Cura](https://ultimaker.com/software/ultimaker-cura), and printed it at home with an Anycubic Mega X.
 
 ![print](/images/print.gif)
-<img src="images/cad.png" alt="drawing" width="320"/>
-<img src="images/dispenser.JPG" alt="drawing" height="250"/>
+
+<div>
+    <img src="images/cad.png" alt="drawing" width="320"/>
+    <img src="images/dispenser.JPG" alt="drawing" height="250"/>
+<div>
 
 # Using a Pre-Trained Cat Detector
 
