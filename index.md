@@ -18,7 +18,7 @@ Typically, pet detection is done via IR motion sensors, which can detect an appr
 
 This is where machine learning comes into play. By using AI to detect the state of the bowl and to detect specifically for approaching pets, automatic pet feeders can become much smarter and more controllable, while also removing the need for potentially expensive extra equipment such as IR sensors.
 
-To demonstrate this, my project uses a custom-trained convolutional neural network to determine whether a bowl is empty or full, and a pre-trained neural network that can accurately recognize the correct animal approaching the feeder. It uses two Raspberry Pis with a PiCamera each, one to monitor the state of the bowl, and another to watch for incoming pets. Communication will be done using a webserver hosted on one Pi, and the dispenser mechanism will be done using a 3D-printed system, with some Lego motors.
+To demonstrate this, my project uses a custom-trained convolutional neural network to determine whether a bowl is empty or full, and a pre-trained neural network that can accurately recognize the correct animal approaching the feeder. It uses two Raspberry Pis with a PiCamera each, one to monitor the state of the bowl, and another to watch for incoming pets. Communication will be done using a web service hosted on one Pi, and the dispenser mechanism will be done using a 3D-printed system, with some Lego motors.
 
 ![dispensing](/images/dispensing.gif)
 
@@ -34,7 +34,7 @@ To create this project, I learned to use [Anaconda](https://www.anaconda.com/), 
 
 In order to train my own neural network, I first needed needed to collect my own dataset of Mimi's food bowl, with properly labelled training and validation sets.
 
-To make collecting the data set easier, I wrote a [script](https://github.com/chitsbits/bowl-ml/blob/master/take_train_images.py) (`take_train_images.py`) that allowed me to take pictures using the spacebar, while also automatically naming the image and uploading it to my home server. I took the pictures with the Raspberry Pi I would later use for the dispenser, and made sure to keep the positioning the same, in order to keep the model accurate.
+To make collecting the data set easier, I wrote a [script](https://github.com/chitsbits/bowl-ml/blob/master/take_train_images.py) (`take_train_images.py`) that allowed me to take pictures using the spacebar, while also automatically naming the image and uploading it to my home data server. I took the pictures with the Raspberry Pi I would later use for the dispenser, and made sure to keep the positioning the same, in order to keep the model accurate.
 
 I collected a total of 129 images; 25 images of a empty bowl, and 104 images of a non-empty bowl. Using the 80/20% rule of thumb, I put 80% of the images, randomly selected, to the training set, and the other 20% to the validation set.
 
@@ -218,7 +218,7 @@ Something interesting I noticed was that although there were no images in the tr
 
 [TensorFlow Lite](https://www.tensorflow.org/lite) is a lightweight framework for deploying TensorFlow models onto IoT devices, such as for Android, iOS, and Raspberry Pi. Now that I had my working model, I wrote [`LiteConverter.ipynb`](https://github.com/chitsbits/bowl-ml/blob/master/LiteConverter.ipynb) to convert the model from the *SavedModel* format into a `.tflite` file.
 
-Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatFeeder.py), which hosts a basic HTTP server using [Flask](https://flask.palletsprojects.com/en/1.1.x/). The program waits for POST requests from the cat detector, which contains the current status of the cat detector. If both the cat is in the room and the bowl is empty, a function is called which uses the GPIO pins to power the Lego motor, driving an axle that pushes food through an opening.
+Running in the dispenser's Raspberry Pi is [`CatFeeder.py`](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatFeeder.py), which hosts a basic HTTP web service using [Flask](https://flask.palletsprojects.com/en/1.1.x/). The program waits for POST requests from the cat detector, which contains the current status of the cat detector. If both the cat is in the room and the bowl is empty, a function is called which uses the GPIO pins to power the Lego motor, driving an axle that pushes food through an opening.
 
 The dispenser is mounted on a stand, with a 3D printed chassis, containing a box for the motor and a container for the cat food. I modelled the chassis using [FreeCAD](https://www.freecadweb.org/) and [Cura](https://ultimaker.com/software/ultimaker-cura), and printed it at home with an Anycubic Mega X.
 
@@ -238,7 +238,7 @@ Unlike with the food bowl, there are many optimized pre-trained cat detectors th
 
 MobileNet V1 is an SSD model, which stands for *Single Shot Detector*. SSD models can identify multiple objects within an image, while also determining their locations and bounding boxes. I used an SSD for this project, as the majority of pre-trained cat models were trained to identify cats versus dogs, rather than cats versus no cats; I needed a model which could do the latter. By simply ignoring other objects found by the model, I could use the SSD model to only detect for cats within the image. Another benefit of using and SSD is that, if needed, one could change the object to detect. For example, if you had a dog instead (or in addition to a cat), the same model could detect for dogs too.
 
-My program, [CatDetector.py](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatDetector.py), uses modified code from the TensorFlow Lite [examples repository](https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect_picamera.py) to detect specifically for the prescence of a cat, ignoring other objects and bounding boxes, and sends that data via POST request to the webserver hosted on the dispenser.
+My program, [CatDetector.py](https://github.com/chitsbits/bowl-ml/blob/master/cat_feeder/CatDetector.py), uses modified code from the TensorFlow Lite [examples repository](https://github.com/tensorflow/examples/blob/master/lite/examples/object_detection/raspberry_pi/detect_picamera.py) to detect specifically for the prescence of a cat, ignoring other objects and bounding boxes, and sends that data via POST request to the web service hosted on the dispenser.
 
 # Conclusion
 
