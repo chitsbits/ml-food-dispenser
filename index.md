@@ -6,7 +6,7 @@ A few months ago, some relatives of mine were travelling abroad and needed a fam
 
 At the time, I had also recently completed Andrew Ng's popular [machine learning course](https://www.coursera.org/learn/machine-learning), offered by Stanford on Coursera, and was looking for ideas on a project to apply this new knowledge. I was about to settle on the idea of training a neural network to identify if the microwave and refrigerator doors in my kitchen were open (something that practically would just be done using a sensor), until our family brought in Mimi.
 
-Here's how I created bowl-ml, an automated cat food dispenser using convolutional neural networks and IoTs.
+Here's how I created an automated cat food dispenser using convolutional neural networks and IoTs.
 
 ## Background
 
